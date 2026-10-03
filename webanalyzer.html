@@ -45,6 +45,165 @@
             font-weight: 600;
             border-bottom: 2px solid #4f46e5;
         }
+
+        /* Website analysis loading window */
+        .analysis-spinner {
+            width: 58px;
+            height: 58px;
+            border: 5px solid #e0e7ff;
+            border-top-color: #4f46e5;
+            border-radius: 50%;
+            animation: analysisSpin 0.8s linear infinite;
+        }
+
+        @keyframes analysisSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        #loading-progress {
+            transition: width 0.1s linear;
+        }
+
+        .analysis-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 24px;
+            min-height: 230px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            transition: 0.25s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-icon { font-size: 27px; margin-bottom: 14px; }
+        .feature-card h3 { margin: 0 0 18px; font-size: 17px; color: #1e293b; }
+        .feature-value { font-size: 32px; font-weight: 700; color: #2563eb; }
+        .feature-card p { color: #64748b; font-size: 14px; margin: 7px 0 15px; }
+
+        .progress {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 92%;
+            background: #22c55e;
+            border-radius: 20px;
+        }
+
+        .score {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .trend {
+            color: #16a34a;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .device, .country {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .device strong, .country strong { color: #1e293b; }
+
+        .bar {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .bar div {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+
+        .rating-card { text-align: center; }
+
+        .rating {
+            display: inline-block;
+            font-size: 52px;
+            font-weight: 800;
+            color: #2563eb;
+        }
+
+        .out-of {
+            display: inline-block;
+            color: #94a3b8;
+            font-size: 16px;
+        }
+
+        .stars {
+            color: #f59e0b;
+            font-size: 22px;
+            letter-spacing: 2px;
+            margin: 5px 0;
+        }
+
+        .excellent {
+            color: #16a34a !important;
+            font-weight: 700;
+        }
+
+        .trust-rating {
+            font-size: 38px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .trust-rating span {
+            font-size: 17px;
+            color: #94a3b8;
+        }
+
+        .review-count { margin-top: 10px !important; }
+
+        .trust-source {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        @media (max-width: 900px) {
+            .analysis-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .analysis-grid { grid-template-columns: 1fr; }
+        }
+
         /* Loader */
         .loader {
             border: 4px solid #f3f3f3;
@@ -176,319 +335,191 @@
 
         <section id="analyzer" class="view-section w-full bg-slate-50 min-h-[calc(100vh-64px)] py-10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
                 <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <h2 class="text-3xl font-bold text-dark">Domain Analysis</h2>
-                    <form id="analyzer-form" class="flex bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden" onsubmit="handleAnalyzeSubmit(event)">
-                        <input type="text" id="analyzer-domain-input" placeholder="Enter domain..." class="px-4 py-2 outline-none w-64">
-                        <button type="submit" class="bg-slate-100 hover:bg-slate-200 px-4 py-2 border-l border-slate-200 text-slate-700 font-medium transition-colors">
+
+                    <form id="analyzer-form"
+                          class="flex bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden"
+                          onsubmit="handleAnalyzeSubmit(event)">
+                        <input type="text"
+                               id="analyzer-domain-input"
+                               placeholder="Enter domain..."
+                               class="px-4 py-2 outline-none w-64"
+                               autocomplete="off">
+                        <button id="analyzer-submit-btn"
+                                type="submit"
+                                class="bg-slate-100 hover:bg-slate-200 px-4 py-2 border-l border-slate-200 text-slate-700 font-medium transition-colors">
                             Analyze
                         </button>
                     </form>
                 </div>
 
-                <!-- Loading State -->
-                <div id="analyzer-loading" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-20 text-center flex-col items-center justify-center">
-                    <div class="loader mx-auto mb-6"></div>
-                    <h3 class="text-xl font-semibold text-slate-700 mb-2">Scanning Website...</h3>
-                    <p class="text-slate-500" id="loading-text">Fetching performance data for your domain.</p>
+                <!-- Empty state: shown before the first analysis -->
+                <div id="analyzer-empty"
+                     class="bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-sm">
+                    <div class="bg-indigo-50 w-16 h-16 rounded-full flex items-center justify-center text-primary text-2xl mx-auto mb-5">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-2">Analyze a Website</h3>
+                    <p class="text-slate-500 max-w-xl mx-auto">
+                        Enter a domain above to analyze its speed, traffic, devices,
+                        top countries, rating, and trust reviews.
+                    </p>
                 </div>
-            <section class="analysis-grid">
 
-    <!-- 1. Website Speed -->
-                <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h3>Website Speed</h3>
-        <div class="feature-value">1.42s</div>
-        <p>Excellent loading speed</p>
-        <div class="progress">
-            <div class="progress-bar speed"></div>
-        </div>
-        <span class="score">92 / 100</span>
-    </div>
+                <!-- Loading state: hidden until Analyze is submitted -->
+                <div id="analyzer-loading"
+                     class="hidden min-h-[430px] items-center justify-center">
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-10 text-center w-full max-w-xl">
 
-    <!-- 2. Traffic -->
-    <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3>Traffic</h3>
-        <div class="feature-value">2.4M</div>
-        <p>Estimated monthly visits</p>
-        <div class="trend">↑ 8.4% this month</div>
-    </div>
+                        <div class="analysis-spinner mx-auto mb-6"></div>
 
-    <!-- 3. Devices -->
-    <div class="feature-card">
-        <div class="feature-icon">📱</div>
-        <h3>Devices</h3>
+                        <h3 class="text-2xl font-bold text-dark mb-2">
+                            Analyzing Website
+                        </h3>
 
-        <div class="device">
-            <span>📱 Mobile</span>
-            <strong>68%</strong>
-        </div>
+                        <p id="loading-message" class="text-slate-500 mb-6">
+                            Checking website performance...
+                        </p>
 
-        <div class="bar">
-            <div style="width:68%"></div>
-        </div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div id="loading-progress"
+                                 class="h-full bg-primary rounded-full"
+                                 style="width: 0%">
+                            </div>
+                        </div>
 
-        <div class="device">
-            <span>💻 Desktop</span>
-            <strong>27%</strong>
-        </div>
+                        <div class="flex justify-between mt-2 text-xs text-slate-400">
+                            <span>WebInsight Analysis</span>
+                            <span id="loading-percent">0%</span>
+                        </div>
 
-        <div class="bar">
-            <div style="width:27%"></div>
-        </div>
+                    </div>
+                </div>
 
-        <div class="device">
-            <span>Tablet</span>
-            <strong>5%</strong>
-        </div>
+                <!-- Results: hidden until the analysis finishes -->
+                <div id="analyzer-results" class="hidden">
 
-        <div class="bar">
-            <div style="width:5%"></div>
-        </div>
-    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 mb-6 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div>
+                                <p class="text-sm text-slate-400">Analysis Results</p>
+                                <h3 id="result-domain" class="text-2xl font-bold text-dark">example.com</h3>
+                            </div>
+                            <span class="inline-flex items-center gap-2 text-sm text-emerald-600 font-semibold">
+                                <i class="fa-solid fa-circle-check"></i>
+                                Analysis Complete
+                            </span>
+                        </div>
+                    </div>
 
-    <!-- 4. Top Countries -->
-    <div class="feature-card">
-        <div class="feature-icon">🌍</div>
-        <h3>Top Countries</h3>
+                    <div class="analysis-grid">
 
-        <div class="country">
-            <span>🇮🇳 India</span>
-            <strong>42%</strong>
-        </div>
+                        <!-- 1. Website Speed -->
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h3>Website Speed</h3>
+                            <div class="feature-value">1.42s</div>
+                            <p>Excellent loading speed</p>
+                            <div class="progress">
+                                <div class="progress-bar speed"></div>
+                            </div>
+                            <span class="score">92 / 100</span>
+                        </div>
 
-        <div class="country">
-            <span>🇺🇸 USA</span>
-            <strong>21%</strong>
-        </div>
+                        <!-- 2. Traffic -->
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h3>Traffic</h3>
+                            <div class="feature-value">2.4M</div>
+                            <p>Estimated monthly visits</p>
+                            <div class="trend">↑ 8.4% this month</div>
+                        </div>
 
-        <div class="country">
-            <span>🇬🇧 UK</span>
-            <strong>12%</strong>
-        </div>
+                        <!-- 3. Devices -->
+                        <div class="feature-card">
+                            <div class="feature-icon">📱</div>
+                            <h3>Devices</h3>
 
-        <div class="country">
-            <span>🇩🇪 Germany</span>
-            <strong>8%</strong>
-        </div>
+                            <div class="device">
+                                <span>📱 Mobile</span>
+                                <strong>68%</strong>
+                            </div>
+                            <div class="bar"><div style="width:68%"></div></div>
 
-    </div>
+                            <div class="device">
+                                <span>💻 Desktop</span>
+                                <strong>27%</strong>
+                            </div>
+                            <div class="bar"><div style="width:27%"></div></div>
 
-    <!-- 5. Website Rating -->
-    <div class="feature-card rating-card">
-        <div class="feature-icon">⭐</div>
-        <h3>Website Rating</h3>
+                            <div class="device">
+                                <span>Tablet</span>
+                                <strong>5%</strong>
+                            </div>
+                            <div class="bar"><div style="width:5%"></div></div>
+                        </div>
 
-        <div class="rating">92</div>
-        <div class="out-of">/ 100</div>
+                        <!-- 4. Top Countries -->
+                        <div class="feature-card">
+                            <div class="feature-icon">🌍</div>
+                            <h3>Top Countries</h3>
 
-        <div class="stars">★★★★★</div>
+                            <div class="country">
+                                <span>🇮🇳 India</span>
+                                <strong>42%</strong>
+                            </div>
 
-        <p class="excellent">Excellent</p>
-        <small>Based on performance</small>
-    </div>
+                            <div class="country">
+                                <span>🇺🇸 USA</span>
+                                <strong>21%</strong>
+                            </div>
 
-    <!-- 6. Trust & Reviews -->
-    <div class="feature-card">
-        <div class="feature-icon">🛡️</div>
-        <h3>Trust & Reviews</h3>
+                            <div class="country">
+                                <span>🇬🇧 UK</span>
+                                <strong>12%</strong>
+                            </div>
 
-        <div class="trust-rating">
-            4.4 <span>/ 5</span>
-        </div>
+                            <div class="country">
+                                <span>🇩🇪 Germany</span>
+                                <strong>8%</strong>
+                            </div>
+                        </div>
 
-        <div class="stars">★★★★★</div>
+                        <!-- 5. Website Rating -->
+                        <div class="feature-card rating-card">
+                            <div class="feature-icon">⭐</div>
+                            <h3>Website Rating</h3>
 
-        <p class="review-count">12,450 reviews</p>
+                            <div class="rating">92</div>
+                            <div class="out-of">/ 100</div>
 
-        <div class="trust-source">
-            Trustpilot
-        </div>
-    </div>
+                            <div class="stars">★★★★★</div>
 
-</section>
+                            <p class="excellent">Excellent</p>
+                            <small>Based on performance</small>
+                        </div>
 
+                        <!-- 6. Trust & Reviews -->
+                        <div class="feature-card">
+                            <div class="feature-icon">🛡️</div>
+                            <h3>Trust & Reviews</h3>
 
-<style>
+                            <div class="trust-rating">
+                                4.4 <span>/ 5</span>
+                            </div>
 
-.analysis-grid {
-    width: 100%;
-    max-width: 1200px;
-    margin: 30px auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
+                            <div class="stars">★★★★★</div>
 
-.feature-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 24px;
-    min-height: 230px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-    transition: 0.25s ease;
-}
+                            <p class="review-count">12,450 reviews</p>
 
-.feature-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-}
+                            <div class="trust-source">Trustpilot</div>
+                        </div>
 
-.feature-icon {
-    font-size: 27px;
-    margin-bottom: 14px;
-}
-
-.feature-card h3 {
-    margin: 0 0 18px;
-    font-size: 17px;
-    color: #1e293b;
-}
-
-.feature-value {
-    font-size: 32px;
-    font-weight: 700;
-    color: #2563eb;
-}
-
-.feature-card p {
-    color: #64748b;
-    font-size: 14px;
-    margin: 7px 0 15px;
-}
-
-.progress {
-    height: 8px;
-    background: #e5e7eb;
-    border-radius: 20px;
-    overflow: hidden;
-    margin-top: 15px;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 92%;
-    background: #22c55e;
-    border-radius: 20px;
-}
-
-.score {
-    display: block;
-    margin-top: 8px;
-    font-size: 13px;
-    color: #16a34a;
-    font-weight: 600;
-}
-
-.trend {
-    color: #16a34a;
-    font-size: 14px;
-    font-weight: 600;
-    margin-top: 15px;
-}
-
-.device,
-.country {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 12px;
-    font-size: 14px;
-    color: #475569;
-}
-
-.device strong,
-.country strong {
-    color: #1e293b;
-}
-
-.bar {
-    height: 6px;
-    background: #e5e7eb;
-    border-radius: 10px;
-    margin-top: 6px;
-    overflow: hidden;
-}
-
-.bar div {
-    height: 100%;
-    background: #3b82f6;
-    border-radius: 10px;
-}
-
-.rating-card {
-    text-align: center;
-}
-
-.rating {
-    display: inline-block;
-    font-size: 52px;
-    font-weight: 800;
-    color: #2563eb;
-}
-
-.out-of {
-    display: inline-block;
-    color: #94a3b8;
-    font-size: 16px;
-}
-
-.stars {
-    color: #f59e0b;
-    font-size: 22px;
-    letter-spacing: 2px;
-    margin: 5px 0;
-}
-
-.excellent {
-    color: #16a34a !important;
-    font-weight: 700;
-}
-
-.trust-rating {
-    font-size: 38px;
-    font-weight: 800;
-    color: #1e293b;
-}
-
-.trust-rating span {
-    font-size: 17px;
-    color: #94a3b8;
-}
-
-.review-count {
-    margin-top: 10px !important;
-}
-
-.trust-source {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 6px 12px;
-    background: #f1f5f9;
-    border-radius: 20px;
-    font-size: 13px;
-    color: #475569;
-}
-
-
-/* Tablet */
-@media (max-width: 900px) {
-    .analysis-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-
-/* Mobile */
-@media (max-width: 600px) {
-    .analysis-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-</style>            
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="about" class="view-section w-full py-16">
@@ -607,39 +638,35 @@
         // Store current view
         let currentView = 'home';
 
-        // Navigation logic
         function navigate(sectionId) {
-            // Prevent scrolling to top instantly, handle smoothly
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // Hide all sections
             document.querySelectorAll('.view-section').forEach(el => {
                 el.classList.remove('active');
             });
-            
-            // Show target section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Update active state on nav links
+
+            const target = document.getElementById(sectionId);
+            if (target) target.classList.add('active');
+
             document.querySelectorAll('.nav-link').forEach(link => {
-                if(link.getAttribute('data-target') === sectionId) {
-                    link.classList.add('active-link');
-                } else {
-                    link.classList.remove('active-link');
-                }
+                link.classList.toggle(
+                    'active-link',
+                    link.getAttribute('data-target') === sectionId
+                );
             });
 
-            // Specific logic when entering analyzer
-            if(sectionId === 'analyzer') {
+            // Only reset when the user intentionally opens Analyzer.
+            // Do not reset during an analysis started from the homepage.
+            if (sectionId === 'analyzer' && currentView !== 'home') {
                 resetAnalyzer();
             }
 
             currentView = sectionId;
         }
 
-        // Mobile menu toggle
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
+
             if (menu.classList.contains('hidden')) {
                 menu.classList.remove('hidden');
             } else {
@@ -647,49 +674,138 @@
             }
         }
 
-        // Reset Analyzer View
         function resetAnalyzer() {
-            document.getElementById('analyzer-empty').classList.remove('hidden');
-            document.getElementById('analyzer-loading').classList.add('hidden');
-            document.getElementById('analyzer-results').classList.add('hidden');
+            const empty = document.getElementById('analyzer-empty');
+            const loading = document.getElementById('analyzer-loading');
+            const results = document.getElementById('analyzer-results');
+
+            if (empty) empty.classList.remove('hidden');
+            if (loading) {
+                loading.classList.add('hidden');
+                loading.classList.remove('flex');
+            }
+            if (results) results.classList.add('hidden');
         }
 
-        // Form Submission Handlers
         function handleAnalyzeSubmit(event) {
             event.preventDefault();
-            
-            // Get domain from whichever form submitted it
-            let domain = "";
-            if(event.target.id === 'hero-analyze-form') {
-                domain = document.getElementById('home-domain-input').value;
-                document.getElementById('analyzer-domain-input').value = domain;
-            } else {
-                domain = document.getElementById('analyzer-domain-input').value;
+
+            const sourceId = event.target.id;
+
+            let domain = sourceId === 'hero-analyze-form'
+                ? document.getElementById('home-domain-input').value.trim()
+                : document.getElementById('analyzer-domain-input').value.trim();
+
+            if (!domain) return;
+
+            // Accept URLs such as:
+            // example.com
+            // https://example.com
+            // http://example.com/page
+            domain = domain
+                .replace(/^https?:\/\//i, '')
+                .replace(/^www\./i, '')
+                .replace(/\/.*$/, '')
+                .trim();
+
+            if (!domain) return;
+
+            // Put the domain into the analyzer input.
+            document.getElementById('analyzer-domain-input').value = domain;
+
+            // Switch to analyzer without resetting its state.
+            const wasAnalyzer = currentView === 'analyzer';
+
+            if (!wasAnalyzer) {
+                document.querySelectorAll('.view-section').forEach(el => {
+                    el.classList.remove('active');
+                });
+
+                document.getElementById('analyzer').classList.add('active');
+
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.toggle(
+                        'active-link',
+                        link.getAttribute('data-target') === 'analyzer'
+                    );
+                });
+
+                currentView = 'analyzer';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
-            if(!domain) return;
+            startWebsiteAnalysis(domain);
+        }
 
-            // Strip http/https for display
-            domain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+        function startWebsiteAnalysis(domain) {
+            const empty = document.getElementById('analyzer-empty');
+            const loading = document.getElementById('analyzer-loading');
+            const results = document.getElementById('analyzer-results');
 
-            // Navigate to analyzer section if not already there
-            navigate('analyzer');
+            const progress = document.getElementById('loading-progress');
+            const percent = document.getElementById('loading-percent');
+            const message = document.getElementById('loading-message');
+            const resultDomain = document.getElementById('result-domain');
+            const button = document.getElementById('analyzer-submit-btn');
 
-            // Show Loading State
-            document.getElementById('analyzer-empty').classList.add('hidden');
-            document.getElementById('analyzer-results').classList.add('hidden');
-            document.getElementById('analyzer-loading').classList.remove('hidden');
-            document.getElementById('analyzer-loading').classList.add('flex'); // to override hidden
+            // Hide everything except loading.
+            empty.classList.add('hidden');
+            results.classList.add('hidden');
+            loading.classList.remove('hidden');
+            loading.classList.add('flex');
 
-            // Simulate API Call delay
-            setTimeout(() => {
-                // Hide loading, show results
-                document.getElementById('analyzer-loading').classList.add('hidden');
-                document.getElementById('analyzer-loading').classList.remove('flex');
-                
-                document.getElementById('result-domain').innerText = domain;
-                document.getElementById('analyzer-results').classList.remove('hidden');
-            }, 2500); // 2.5 second mock loading
+            button.disabled = true;
+            button.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Analyzing...';
+
+            progress.style.width = '0%';
+            percent.textContent = '0%';
+
+            const messages = [
+                'Checking website performance...',
+                'Analyzing traffic data...',
+                'Checking device statistics...',
+                'Finding top countries...',
+                'Calculating website rating...',
+                'Checking trust and reviews...'
+            ];
+
+            // Randomly choose 5–10 seconds.
+            const duration = Math.floor(Math.random() * 5001) + 5000;
+            const startTime = Date.now();
+
+            const timer = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const percentage = Math.min((elapsed / duration) * 100, 100);
+
+                progress.style.width = percentage + '%';
+                percent.textContent = Math.floor(percentage) + '%';
+
+                const messageIndex = Math.min(
+                    Math.floor((percentage / 100) * messages.length),
+                    messages.length - 1
+                );
+
+                message.textContent = messages[messageIndex];
+
+                if (percentage >= 100) {
+                    clearInterval(timer);
+
+                    resultDomain.textContent = domain;
+
+                    loading.classList.add('hidden');
+                    loading.classList.remove('flex');
+
+                    results.classList.remove('hidden');
+
+                    button.disabled = false;
+                    button.innerHTML = 'Analyze';
+
+                    results.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }, 50);
         }
 
         function handleAuth(event, type) {
